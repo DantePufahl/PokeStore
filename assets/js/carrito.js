@@ -1,0 +1,31 @@
+function cargarCarrito(){poekmonsEnCarrito&&poekmonsEnCarrito.length>0?(carritoVacio.classList.add("disabled"),carritoProductos.classList.remove("disabled"),carritoAcciones.classList.remove("disabled"),carritoComprado.classList.add("disabled"),carritoProductos.innerHTML="",poekmonsEnCarrito.forEach(n=>{const t=document.createElement("div");t.classList.add("pokemon__cart");t.innerHTML=`
+      <div class="cart__img">
+      <img class="cart__img-img" src="${n.img}" alt="${n.name}" />
+    </div>
+    <div class="cart__info">
+      <p class="info__name-data">Nombre:</p>
+      <h4>${n.name}</h4>
+    </div>
+    <div class="cart__info"> 
+    <p class="info__name-data">Cantidad:</p>
+    <div class="cart__info cart__info-1">
+      <button class="cant__button">
+      <p id="${n.id}" class="button__cant button__cant-decrementar">-</p>
+    </button>
+      <p>${n.cantidad}</p>
+      <button class="cant__button">
+      <p id="${n.id}" class="button__cant button__cant-incrementar">+</p>
+    </button>
+    </div>
+    </div>
+    <div class="cart__info">
+      <p class="info__name-data">Precio:</p>
+      <p>$${n.precios}</p>
+    </div>
+    <div class="cart__info">
+      <p class="info__name-data">Subtotal:</p>
+      <p>$${n.precios*n.cantidad}</p>
+    </div>
+    <button class="tarsh__button">
+      <i id="${n.id}" class="ri-delete-bin-2-line tarsh icon"></i>
+    </button>`;carritoProductos.append(t);const i=t.querySelector(".button__cant-decrementar"),r=t.querySelector(".button__cant-incrementar");i.addEventListener("click",()=>modificarCantidad(n.id,-1));r.addEventListener("click",()=>modificarCantidad(n.id,1))}),actualizarTotal()):(carritoVacio.classList.remove("disabled"),carritoProductos.classList.add("disabled"),carritoAcciones.classList.add("disabled"),carritoComprado.classList.add("disabled"))}function actualizarBotonesEliminar(){buttonEliminar=document.querySelectorAll(".tarsh__button");buttonEliminar.forEach(n=>{n&&n.addEventListener("click",function(n){eliminarDelCarrito(n)})})}function actualizarCantidad(){let n=poekmonsEnCarrito.reduce((n,t)=>n+t.cantidad,0);cantidadProductos.innerText=n}function modificarCantidad(n,t){const i=poekmonsEnCarrito.find(t=>t.id===n);if(i){if(i.cantidad+=t,i.cantidad<1){const t=poekmonsEnCarrito.findIndex(t=>t.id===n);poekmonsEnCarrito.splice(t,1)}localStorage.setItem("productos-en-carrito",JSON.stringify(poekmonsEnCarrito));cargarCarrito();actualizarBotonesEliminar();actualizarCantidad()}}function eliminarDelCarrito(n){Toastify({text:"¡Pokemon eliminado!",duration:1e3,gravity:"top",position:"right",stopOnFocus:!0,style:{background:"#c03028"},offset:{x:"0rem",y:"3rem"},onClick:function(){}}).showToast();const i=n.target.id,t=poekmonsEnCarrito.findIndex(n=>n.id===i);t!==-1&&(poekmonsEnCarrito.splice(t,1),localStorage.setItem("productos-en-carrito",JSON.stringify(poekmonsEnCarrito)),cargarCarrito(),actualizarBotonesEliminar(),actualizarCantidad())}function vaciarCarrito(){Swal.fire({title:"¿Estás seguro?",text:"Se van a borrar todos tus productos.",icon:"warning",showCancelButton:!0,confirmButtonColor:"#c03028",cancelButtonColor:"#0678ac",confirmButtonText:"Si, Eliminar!",cancelButtonText:"Cancelar"}).then(n=>{n.isConfirmed&&(poekmonsEnCarrito.length=0,localStorage.setItem("productos-en-carrito",JSON.stringify(poekmonsEnCarrito)),cargarCarrito(),actualizarBotonesEliminar(),actualizarCantidad())})}function comprarCarrito(){Swal.fire({title:"¿Quieres continuar?",text:"Esta acción procederá con la compra. ¿Deseas continuar?",icon:"question",showCancelButton:!0,confirmButtonColor:"#0678ac",cancelButtonColor:"#c03028",confirmButtonText:"Sí, Comprar!",cancelButtonText:"Cancelar"}).then(n=>{n.isConfirmed&&(poekmonsEnCarrito.length=0,localStorage.setItem("productos-en-carrito",JSON.stringify(poekmonsEnCarrito)),cargarCarrito(),actualizarBotonesEliminar(),actualizarCantidad(),carritoVacio.classList.add("disabled"),carritoProductos.classList.add("disabled"),carritoAcciones.classList.add("disabled"),carritoComprado.classList.remove("disabled"))})}function actualizarTotal(){const n=poekmonsEnCarrito.reduce((n,t)=>n+t.precios*t.cantidad,0);compraTotal.innerText=`$${n}`}function activarDarkMode(){body.classList.add("dark-mode");localStorage.setItem("dark-mode","activado")}function desactivarDarkMode(){body.classList.remove("dark-mode");localStorage.setItem("dark-mode","desactivado")}let poekmonsEnCarrito=JSON.parse(localStorage.getItem("productos-en-carrito"));const carritoVacio=document.querySelector("#cart-vacio"),carritoProductos=document.querySelector("#cart-products"),carritoAcciones=document.querySelector("#carrito-acciones"),carritoComprado=document.querySelector("#cart-comprado");let buttonEliminar=document.querySelectorAll(".tarsh__button"),cantidadProductos=document.querySelector("#cantidad-cart");const botonVaciar=document.querySelector("#carrito-acciones-vaciar"),compraTotal=document.querySelector("#total"),botonComprar=document.querySelector("#carrito-acciones-comprar");document.addEventListener("DOMContentLoaded",function(){cargarCarrito();actualizarBotonesEliminar();actualizarCantidad()});botonVaciar.addEventListener("click",vaciarCarrito);botonComprar.addEventListener("click",comprarCarrito);const botonColorMode=document.querySelector("#color-mode"),body=document.body;let darkMode=localStorage.getItem("dark-mode");darkMode==="activado"?activarDarkMode():desactivarDarkMode();botonColorMode.addEventListener("click",()=>{darkMode=localStorage.getItem("dark-mode"),darkMode==="activado"?desactivarDarkMode():activarDarkMode()});const hero=document.querySelector("#hero-down"),close=document.querySelector("#close-menu"),open=document.querySelector("#open-menu");open!=null&&(open.addEventListener("click",()=>{hero.classList.add("hero__down-visible")}),close.addEventListener("click",()=>{hero.classList.remove("hero__down-visible")}),document.addEventListener("DOMContentLoaded",function(){const n=document.querySelector(".hamburger"),t=document.querySelector(".hero__down");n.addEventListener("click",function(){t.classList.toggle("active")})}));

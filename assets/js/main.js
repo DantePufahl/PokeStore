@@ -1,0 +1,23 @@
+function mostrarPokemon(n){let t=n.types.map(n=>`<p class="${n.type.name} type">${n.type.name}</p>`);t=t.join("");let i=n.id.toString().padStart(3,"0"),u=JSON.stringify({id:i,name:n.name,precios:preciosLocales[n.id],img:n.sprites.other["official-artwork"].front_default,alt:n.name});const r=document.createElement("div");r.classList.add("card__pokemon");r.innerHTML=`
+      <p class="pokemon__id-background">#${i}</p>
+      <div class="div__img-pokemon">
+          <img src="${n.sprites.other["official-artwork"].front_default}" alt="${n.name}">
+      </div>
+      <div class="pokemon__info">
+      <div class="info__name">
+      <p class="info__pokemon--id">#${i}</p>
+      <h4 class="info__pokemon--name">${n.name}</h4>
+    </div>
+          <div class="info__types">
+              ${t}
+          </div>
+          <div class="info__stats">
+              <p class="stat">${n.height}m</p>
+              <p class="stat">${n.weight}kg</p>
+          </div>
+          <div class="info__btn">
+              <h5 class="info__pokemon--price">$${preciosLocales[n.id]}</h5>
+              <button class="btn__pokemon" data-pokemon='${u}'>Agregar</button>
+          </div>
+      </div>
+    `;listaPokemon.append(r)}function agregarAlCarrito(n){Toastify({text:"¡Pokemon añadido!",duration:1e3,gravity:"top",position:"right",stopOnFocus:!0,style:{background:"#0678ac"},offset:{x:"0rem",y:"3rem"},onClick:function(){}}).showToast();const t=carrito.find(t=>t.id===n.id);t?t.cantidad+=1:carrito.push({id:n.id,name:n.name,img:n.img,alt:n.alt,precios:n.precios,cantidad:1});actualizarCantidad();localStorage.setItem("productos-en-carrito",JSON.stringify(carrito))}function actualizarCantidad(){let n=carrito.reduce((n,t)=>n+t.cantidad,0);cantidadProductos.innerText=n}function activarDarkMode(){body.classList.add("dark-mode");localStorage.setItem("dark-mode","activado")}function desactivarDarkMode(){body.classList.remove("dark-mode");localStorage.setItem("dark-mode","desactivado")}function realizarBusqueda(){const n=inputBusqueda.value.toLowerCase();if(n.trim()!==""){hero.classList.remove("hero__down-visible");listaPokemon.innerHTML="";for(let t=1;t<=151;t++)fetch(URL+t).then(n=>n.json()).then(t=>{const i=t.name.toLowerCase();i.includes(n)&&mostrarPokemon(t)})}}function limpiarInput(){inputBusqueda.value=""}const listaPokemon=document.querySelector("#listaPokemons");let URL="https://pokeapi.co/api/v2/pokemon/";import{preciosLocales}from"./precios.js";for(let n=1;n<=151;n++)fetch(URL+n).then(n=>n.json()).then(n=>{mostrarPokemon(n)});document.addEventListener("DOMContentLoaded",function(){actualizarCantidad()});const poekmonsEnCarritoLS=JSON.parse(localStorage.getItem("productos-en-carrito"));let carrito;carrito=poekmonsEnCarritoLS?poekmonsEnCarritoLS:[];let cantidadProductos=document.querySelector("#cantidad-cart");document.addEventListener("DOMContentLoaded",function(){const n=document.querySelector("#listaPokemons");n.addEventListener("click",n=>{const t=n.target.closest(".btn__pokemon");if(t){const n=JSON.parse(t.dataset.pokemon);agregarAlCarrito(n)}})});const botonColorMode=document.querySelector("#color-mode"),body=document.body;let darkMode=localStorage.getItem("dark-mode");darkMode==="activado"?activarDarkMode():desactivarDarkMode();botonColorMode.addEventListener("click",()=>{darkMode=localStorage.getItem("dark-mode"),darkMode==="activado"?desactivarDarkMode():activarDarkMode()});const hero=document.querySelector("#hero-down"),close=document.querySelector("#close-menu"),open=document.querySelector("#open-menu");open!=null&&(open.addEventListener("click",()=>{hero.classList.add("hero__down-visible")}),close.addEventListener("click",()=>{hero.classList.remove("hero__down-visible")}),document.addEventListener("DOMContentLoaded",function(){const n=document.querySelector(".hamburger"),t=document.querySelector(".hero__down");n.addEventListener("click",function(){t.classList.toggle("active")})}));const botonesHeader=document.querySelectorAll(".btn__header");botonesHeader.forEach(n=>n.addEventListener("click",n=>{const t=n.currentTarget.id;hero.classList.remove("hero__down-visible");listaPokemon.innerHTML="";for(let n=1;n<=151;n++)fetch(URL+n).then(n=>n.json()).then(n=>{if(t==="ver-todos")mostrarPokemon(n);else{const i=n.types.map(n=>n.type.name);i.some(n=>n.includes(t))&&mostrarPokemon(n)}})}));const botonBusqueda=document.querySelector("#button-bucador"),inputBusqueda=document.querySelector("#input-buscador");inputBusqueda.addEventListener("keydown",n=>{n.key==="Enter"&&(n.preventDefault(),realizarBusqueda(),limpiarInput())});botonBusqueda.addEventListener("click",n=>{n.preventDefault(),realizarBusqueda(),limpiarInput()});
