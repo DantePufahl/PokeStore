@@ -19,7 +19,7 @@ PokeStore es un e-commerce de Pokémon que te permite explorar, añadir al carri
 
 ```bash
 
-git clone https://github.com/TuUsuario/PokeStore.git
+git clone https://github.com/DantePufahl/PokeStore.git
 
 ```
 
